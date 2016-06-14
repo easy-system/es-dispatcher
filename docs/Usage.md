@@ -32,6 +32,7 @@ unique configuration key:
    controller action, less than 1000 - after a controller action.
 
 To add a listener to any controller action:
+
 The file `project/module/ExampleModule/config/events.config.php`:
 ```
 use Es\Dispatcher\DispatchEvent;
