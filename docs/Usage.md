@@ -1,6 +1,8 @@
 Usage
 =====
 
+# Listeners for specified controller action
+
 To add a listener to specified controller action, use the following events 
 configuration for your module:
 
@@ -30,6 +32,8 @@ unique configuration key:
 4. As fourth item of array must be specified the priority of handling. 
    Listeners with a priority greater than 1000 will be executed before the 
    controller action, less than 1000 - after a controller action.
+
+# Listeners for any controller action
 
 To add a listener to any controller action:
 
