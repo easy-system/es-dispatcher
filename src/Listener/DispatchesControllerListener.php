@@ -10,10 +10,10 @@
 namespace Es\Dispatcher\Listener;
 
 use Es\Dispatcher\DispatchEvent;
-use Es\Events\EventsInterface;
+use Es\Events\EventsTrait;
 use Es\Http\ServerInterface;
 use Es\Mvc\ControllersInterface;
-use Es\Services\ServicesTrait;
+use Es\Services\Provider;
 use Es\System\SystemEvent;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
@@ -23,28 +23,7 @@ use RuntimeException;
  */
 class DispatchesControllerListener
 {
-    use ServicesTrait;
-
-    /**
-     * The controllers.
-     *
-     * @var \Es\Mvc\ControllersInterface
-     */
-    protected $controllers;
-
-    /**
-     * The events.
-     *
-     * @var \Es\Events\EventsInterface
-     */
-    protected $events;
-
-    /**
-     * The server.
-     *
-     * @var \Es\Http\ServerInterface
-     */
-    protected $server;
+    use EventsTrait;
 
     /**
      * Sets the controllers.
@@ -53,7 +32,7 @@ class DispatchesControllerListener
      */
     public function setControllers(ControllersInterface $controllers)
     {
-        $this->controllers = $controllers;
+        Provider::getServices()->set('Controllers', $controllers);
     }
 
     /**
@@ -63,39 +42,7 @@ class DispatchesControllerListener
      */
     public function getControllers()
     {
-        if (! $this->controllers) {
-            $services    = $this->getServices();
-            $controllers = $services->get('Controllers');
-            $this->setControllers($controllers);
-        }
-
-        return $this->controllers;
-    }
-
-    /**
-     * Sets the events.
-     *
-     * @param \Es\Events\EventsInterface $events The events
-     */
-    public function setEvents(EventsInterface $events)
-    {
-        $this->events = $events;
-    }
-
-    /**
-     * Gets the events.
-     *
-     * @return \Es\Events\EventsInterface The events
-     */
-    public function getEvents()
-    {
-        if (! $this->events) {
-            $services = $this->getServices();
-            $events   = $services->get('Events');
-            $this->setEvents($events);
-        }
-
-        return $this->events;
+        return Provider::getServices()->get('Controllers');
     }
 
     /**
@@ -105,7 +52,7 @@ class DispatchesControllerListener
      */
     public function setServer(ServerInterface $server)
     {
-        $this->server = $server;
+        Provider::getServices()->set('Server', $server);
     }
 
     /**
@@ -115,13 +62,7 @@ class DispatchesControllerListener
      */
     public function getServer()
     {
-        if (! $this->server) {
-            $services = $this->getServices();
-            $server   = $services->get('Server');
-            $this->setServer($server);
-        }
-
-        return $this->server;
+        return Provider::getServices()->get('Server');
     }
 
     /**

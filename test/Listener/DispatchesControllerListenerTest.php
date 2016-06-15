@@ -17,6 +17,7 @@ use Es\Events\Events;
 use Es\Http\Response;
 use Es\Http\Server;
 use Es\Http\ServerRequest;
+use Es\Services\Provider;
 use Es\Services\Services;
 use Es\System\SystemEvent;
 
@@ -35,35 +36,21 @@ class DispatchesControlerListenerTest extends \PHPUnit_Framework_TestCase
         $services    = new Services();
         $controllers = new FakeControllers();
         $services->set('Controllers', $controllers);
+
+        Provider::setServices($services);
         $dispatcher = new DispatchesControllerListener();
-        $dispatcher->setServices($services);
         $this->assertSame($controllers, $dispatcher->getControllers());
     }
 
     public function testSetControllers()
     {
+        $services = new Services();
+        Provider::setServices($services);
+
         $controllers = new FakeControllers();
         $dispatcher  = new DispatchesControllerListener();
         $dispatcher->setControllers($controllers);
-        $this->assertSame($controllers, $dispatcher->getControllers());
-    }
-
-    public function testGetEvents()
-    {
-        $events   = new Events();
-        $services = new Services();
-        $services->set('Events', $events);
-        $dispatcher = new DispatchesControllerListener();
-        $dispatcher->setServices($services);
-        $this->assertSame($events, $dispatcher->getEvents());
-    }
-
-    public function testSetEvents()
-    {
-        $events     = new Events();
-        $dispatcher = new DispatchesControllerListener();
-        $dispatcher->setEvents($events);
-        $this->assertSame($events, $dispatcher->getEvents());
+        $this->assertSame($controllers, $services->get('Controllers'));
     }
 
     public function testGetServer()
@@ -71,17 +58,21 @@ class DispatchesControlerListenerTest extends \PHPUnit_Framework_TestCase
         $server   = new Server();
         $services = new Services();
         $services->set('Server', $server);
+
+        Provider::setServices($services);
         $dispatcher = new DispatchesControllerListener();
-        $dispatcher->setServices($services);
         $this->assertSame($server, $dispatcher->getServer());
     }
 
     public function testSetServer()
     {
+        $services = new Services();
+        Provider::setServices($services);
+
         $server     = new Server();
         $dispatcher = new DispatchesControllerListener();
         $dispatcher->setServer($server);
-        $this->assertSame($server, $dispatcher->getServer());
+        $this->assertSame($server, $services->get('Server'));
     }
 
     public function testOnDispatchRaiseExceptionIfRequestNotHaveTheControllerAttribute()
@@ -102,7 +93,7 @@ class DispatchesControlerListenerTest extends \PHPUnit_Framework_TestCase
     public function testOnDispatchIfResultIsInstanceOfResponse()
     {
         $server   = new Server();
-        $request  = $this->getMock('Es\Http\ServerRequest');
+        $request  = $this->getMock(ServerRequest::CLASS);
         $response = new Response();
         $server->setRequest($request);
         $server->setResponse($response);
@@ -163,7 +154,7 @@ class DispatchesControlerListenerTest extends \PHPUnit_Framework_TestCase
         $result = 'Lorem ipsum dolor sit amet';
 
         $server   = new Server();
-        $request  = $this->getMock('Es\Http\ServerRequest');
+        $request  = $this->getMock(ServerRequest::CLASS);
         $response = new Response();
         $server->setRequest($request);
         $server->setResponse($response);
@@ -172,7 +163,7 @@ class DispatchesControlerListenerTest extends \PHPUnit_Framework_TestCase
         $controllers = new FakeControllers();
         $controllers->set('FakeController', $controller);
 
-        $events = $this->getMock('Es\Events\Events');
+        $events = $this->getMock(Events::CLASS);
 
         $dispatcher = new DispatchesControllerListener();
         $dispatcher->setServer($server);
@@ -230,7 +221,7 @@ class DispatchesControlerListenerTest extends \PHPUnit_Framework_TestCase
         $controller = $this->getMock('FakeController', ['fakeAction']);
         $event      = new DispatchEvent($controller, 'FakeController', 'fake', $params);
 
-        $request  = $this->getMock('Es\Http\ServerRequest');
+        $request  = $this->getMock(ServerRequest::CLASS);
         $response = new Response();
         $server   = new Server();
         $server->setRequest($request);
