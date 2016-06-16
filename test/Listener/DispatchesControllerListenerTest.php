@@ -15,10 +15,8 @@ use Es\Dispatcher\Test\FakeController;
 use Es\Dispatcher\Test\FakeControllers;
 use Es\Events\Events;
 use Es\Http\Response;
-use Es\Http\Server;
 use Es\Http\ServerRequest;
-use Es\Services\Provider;
-use Es\Services\Services;
+use Es\Server\Server;
 use Es\System\SystemEvent;
 
 class DispatchesControlerListenerTest extends \PHPUnit_Framework_TestCase
@@ -29,50 +27,6 @@ class DispatchesControlerListenerTest extends \PHPUnit_Framework_TestCase
 
         require_once $testDir . 'FakeControllers.php';
         require_once $testDir . 'FakeController.php';
-    }
-
-    public function testGetControllers()
-    {
-        $services    = new Services();
-        $controllers = new FakeControllers();
-        $services->set('Controllers', $controllers);
-
-        Provider::setServices($services);
-        $dispatcher = new DispatchesControllerListener();
-        $this->assertSame($controllers, $dispatcher->getControllers());
-    }
-
-    public function testSetControllers()
-    {
-        $services = new Services();
-        Provider::setServices($services);
-
-        $controllers = new FakeControllers();
-        $dispatcher  = new DispatchesControllerListener();
-        $dispatcher->setControllers($controllers);
-        $this->assertSame($controllers, $services->get('Controllers'));
-    }
-
-    public function testGetServer()
-    {
-        $server   = new Server();
-        $services = new Services();
-        $services->set('Server', $server);
-
-        Provider::setServices($services);
-        $dispatcher = new DispatchesControllerListener();
-        $this->assertSame($server, $dispatcher->getServer());
-    }
-
-    public function testSetServer()
-    {
-        $services = new Services();
-        Provider::setServices($services);
-
-        $server     = new Server();
-        $dispatcher = new DispatchesControllerListener();
-        $dispatcher->setServer($server);
-        $this->assertSame($server, $services->get('Server'));
     }
 
     public function testOnDispatchRaiseExceptionIfRequestNotHaveTheControllerAttribute()
@@ -102,7 +56,7 @@ class DispatchesControlerListenerTest extends \PHPUnit_Framework_TestCase
         $controllers = new FakeControllers();
         $controllers->set('FakeController', $controller);
 
-        $events = $this->getMock('Es\Events\Events');
+        $events = $this->getMock(Events::CLASS);
 
         $dispatcher = new DispatchesControllerListener();
         $dispatcher->setServer($server);

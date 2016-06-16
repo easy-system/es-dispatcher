@@ -9,11 +9,10 @@
  */
 namespace Es\Dispatcher\Listener;
 
+use Es\Controllers\ControllersTrait;
 use Es\Dispatcher\DispatchEvent;
 use Es\Events\EventsTrait;
-use Es\Http\ServerInterface;
-use Es\Mvc\ControllersInterface;
-use Es\Services\Provider;
+use Es\Server\ServerTrait;
 use Es\System\SystemEvent;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
@@ -23,47 +22,7 @@ use RuntimeException;
  */
 class DispatchesControllerListener
 {
-    use EventsTrait;
-
-    /**
-     * Sets the controllers.
-     *
-     * @param \Es\Mvc\ControllersInterface $controllers The controllers
-     */
-    public function setControllers(ControllersInterface $controllers)
-    {
-        Provider::getServices()->set('Controllers', $controllers);
-    }
-
-    /**
-     * Gets the controllers.
-     *
-     * @return \Es\Mvc\ControllersInterface The controllers
-     */
-    public function getControllers()
-    {
-        return Provider::getServices()->get('Controllers');
-    }
-
-    /**
-     * Sets the server.
-     *
-     * @param \Es\Http\ServerInterface $server The server
-     */
-    public function setServer(ServerInterface $server)
-    {
-        Provider::getServices()->set('Server', $server);
-    }
-
-    /**
-     * Gets the server.
-     *
-     * @return \Es\Http\ServerInterface The server
-     */
-    public function getServer()
-    {
-        return Provider::getServices()->get('Server');
-    }
+    use ControllersTrait, EventsTrait, ServerTrait;
 
     /**
      * Triggers the DispatchEvent.
